@@ -33,6 +33,11 @@ namespace pxgamer {
                     'i' => true,
                     'information' => true,
                 ],
+                'POST' => [
+                    'uload' => true,
+                    'u' => true,
+                    'upload' => true,
+                ],
             ];
 
             return ($method !== '' && $mode !== '' && isset($modes[$method][$mode])) ? true : false;
@@ -60,6 +65,19 @@ namespace pxgamer {
             }
         }
 
+        public static function post($mode = 'upload', $additional = [])
+        {
+            switch ($mode) {
+                case 'uload':
+                case 'u':
+                case 'upload':
+                    return self::uploadFile();
+                    break;
+                default:
+                    return self::json();
+            }
+        }
+
         private static function returnFile()
         {
             if (file_exists(self::$torrent_dir.self::$torrent_id.'.torrent')) {
@@ -74,6 +92,27 @@ namespace pxgamer {
             return true;
         }
 
+        private static function uploadFile()
+        {
+            if (isset($_FILES['torrent_file']['tmp_name'])) {
+                $file = $_FILES['torrent_file']['tmp_name'];
+                $torrent_info = self::parse_torrent(file_get_contents($file));
+                if (!file_exists(self::$torrent_dir.strtoupper($torrent_info['info_hash']).'.torrent')) {
+                    if (move_uploaded_file($_FILES['torrent_file']['tmp_name'], self::$torrent_dir.strtoupper($torrent_info['info_hash']).'.torrent')) {
+                        return self::json(201, ['status' => 'file successfully added', 'return_code' => 201]);
+                    } else {
+                        return self::json();
+                    }
+                } else {
+                    return self::json(200, ['status' => 'torrent already exists, no action taken', 'return_code' => 200]);
+                }
+
+                return true;
+            }
+
+            return self::json(400, ['status' => 'no torrent file provided', 'return_code' => 400]);
+        }
+
         private static function returnInformation()
         {
             if (file_exists(self::$torrent_dir.self::$torrent_id.'.torrent')) {
@@ -81,6 +120,8 @@ namespace pxgamer {
                 $info_array = [
                     'info_hash' => $torrent_info['info_hash'],
                     'title' => (isset($torrent_info['info']['name'])) ? $torrent_info['info']['name'] : null,
+                    'status' => 'success',
+                    'return_code' => 200,
                 ];
 
                 return self::json(200, $info_array);
@@ -174,11 +215,14 @@ namespace pxgamer {
                   echo $tAPI::json(400, ['status' => 'invalid id', 'return_code' => 400]);
               }
               break;
+            case 'POST':
+                echo $tAPI::post($_REQUEST['mode']);
+                break;
             default:
               echo $tAPI::json(405, ['status' => 'request method not implemented', 'return_code' => 405]);
           }
         } else {
-            echo $tAPI::json(405, ['status' => 'invalid or null mode provided', 'return_code' => 405]);
+            echo $tAPI::json(405, ['status' => 'invalid or null mode parameter provided', 'return_code' => 405]);
         }
     } else {
         echo $tAPI::json(401, ['status' => 'invalid or null api_key parameter provided', 'return_code' => 401]);
