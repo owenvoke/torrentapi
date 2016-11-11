@@ -22,3 +22,23 @@ __i | info | information__ (getting a torrent's information)
 
 _URL Structure_  
 `GET /?api_key={api_key}&mode={i|info|information}&id={id} HTTP/1.1`
+
+### POST
+
+Parameter | Type   | Required
+--------- | ------ | --------
+api_key   | string | true
+mode      | string | true
+
+#### Modes
+__u | uload | upload__ (uploading a torrent file)
+
+_URL Structure_  
+`POST / HTTP/1.1`
+
+_Values_
+```
+api_key: {api_key}
+mode: u|uload|upload
+torrent_file: {torrent_file}
+```
