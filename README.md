@@ -17,11 +17,13 @@ __f | file | download__ (getting a torrent file)
 
 _URL Structure_  
 `GET /?api_key={api_key}&mode={f|file|download}&id={id} HTTP/1.1`
+`GET /{api_key}/{f|file|download}/{id}/ HTTP/1.1`
 
 __i | info | information__ (getting a torrent's information)
 
 _URL Structure_  
 `GET /?api_key={api_key}&mode={i|info|information}&id={id} HTTP/1.1`
+`GET /{api_key}/{i|info|information}/ HTTP/1.1`
 
 ### POST
 
