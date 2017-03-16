@@ -1,2 +1,2 @@
-.idea
-*.torrent
+/.idea/
+/files/*.torrent

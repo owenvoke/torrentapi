@@ -1,0 +1,10 @@
+{
+  "name": "pxgamer/torrentapi",
+  "description": "A private torrent database API for caching and web development projects.",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "pxgamer\\TorrentApi\\": "src/"
+    }
+  }
+}
