@@ -15,7 +15,7 @@ class App
     /**
      * @var bool
      */
-    const MUST_VALIDATE = false;
+    const MUST_VALIDATE = true;
 
     /**
      * App constructor.
